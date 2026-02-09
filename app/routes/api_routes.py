@@ -401,6 +401,7 @@ def get_freight_items():
         'ETA', 'FournisseurNom', 'DateCreation', 'Ioe', 'PoC',
         'Refrence_AA', 'IdUtilisateur', 'EmailUtilisateur'
     }
+    entete_required = {'FF_H_House', 'FF_H_NomClient'}
 
     try:
         cols = db.session.execute(text("""
@@ -411,28 +412,39 @@ def get_freight_items():
         """)).scalars().all()
         col_set = {c for c in cols}
 
+        entete_cols = db.session.execute(text("""
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = 'dbo'
+              AND TABLE_NAME = 'View_FF_Entete'
+        """)).scalars().all()
+        entete_set = {c for c in entete_cols}
+
         if not required_cols.issubset(col_set):
             return jsonify({
                 'error': "Colonnes manquantes dans View_FREIGHT",
                 'missing': sorted(required_cols - col_set)
             }), 500
 
-        sql = text("""
+        join_entete = entete_required.issubset(entete_set)
+        sql = text(f"""
             SELECT
-                Devise,
-                dossier,
-                house,
-                MontAchat,
-                MontVente,
-                ETA,
-                FournisseurNom,
-                DateCreation,
-                Ioe,
-                PoC,
-                Refrence_AA,
-                IdUtilisateur,
-                EmailUtilisateur
-            FROM [dbo].[View_FREIGHT]
+                f.Devise,
+                f.dossier,
+                f.house,
+                f.MontAchat,
+                f.MontVente,
+                f.ETA,
+                f.FournisseurNom,
+                f.DateCreation,
+                f.Ioe,
+                f.PoC,
+                f.Refrence_AA,
+                f.IdUtilisateur,
+                f.EmailUtilisateur
+                {', e.FF_H_NomClient AS NomClient' if join_entete else ''}
+            FROM [dbo].[View_FREIGHT] f
+            {'LEFT JOIN [dbo].[View_FF_Entete] e ON e.FF_H_House = f.house' if join_entete else ''}
         """)
 
         rows = db.session.execute(sql).mappings().all()
@@ -450,7 +462,8 @@ def get_freight_items():
                 'poc': row.get('PoC'),
                 'reference_aa': row.get('Refrence_AA'),
                 'id_utilisateur': row.get('IdUtilisateur'),
-                'email_utilisateur': row.get('EmailUtilisateur')
+                'email_utilisateur': row.get('EmailUtilisateur'),
+                'nom_client': row.get('NomClient')
             }
             for row in rows
         ]

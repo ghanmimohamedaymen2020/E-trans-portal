@@ -37,4 +37,6 @@ def internal_error(error):
     return render_template('errors/500.html'), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    use_https = os.environ.get('FLASK_USE_HTTPS', '').lower() in {'1', 'true', 'yes'}
+    ssl_context = 'adhoc' if use_https else None
+    app.run(debug=True, host='0.0.0.0', port=5000, ssl_context=ssl_context)
