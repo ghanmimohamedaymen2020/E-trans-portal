@@ -1,0 +1,191 @@
+Project E-Trans/
+│
+├── 📄 Fichiers de configuration
+│   ├── config.py                    # Configuration Flask
+│   ├── .env                         # Variables d'environnement (local)
+│   ├── .env.example                 # Modèle de .env
+│   ├── .gitignore                   # Fichiers à ignorer
+│   ├── requirements.txt             # Dépendances principales
+│   └── requirements-dev.txt         # Dépendances développement
+│
+├── 📄 Fichiers de démarrage
+│   ├── run.py                       # Point d'entrée principal
+│   ├── init_db.py                   # Initialisation BD
+│   ├── cli.py                       # Commandes CLI
+│   ├── start.bat                    # Démarrage Windows
+│   └── start.sh                     # Démarrage Linux/Mac
+│
+├── 📁 Application (app/)
+│   ├── __init__.py                  # Factory Flask
+│   ├── models.py                    # Modèles SQLAlchemy
+│   │   ├── User                     # Utilisateurs
+│   │   ├── Role                     # Rôles
+│   │   ├── Dossier                  # Dossiers de transport
+│   │   ├── AvisArrivee              # Avis d'arrivée
+│   │   └── PasswordResetToken       # Tokens de réinitialisation
+│   │
+│   ├── utils.py                     # Fonctions utilitaires
+│   │   ├── token_required()         # Décorateur JWT
+│   │   ├── role_required()          # Vérification des rôles
+│   │   └── send_email()             # Envoi d'emails
+│   │
+│   ├── 📁 routes/
+│   │   ├── __init__.py              # Blueprints
+│   │   ├── auth.py                  # Routes authentification
+│   │   │   ├── /login               # Connexion
+│   │   │   ├── /logout              # Déconnexion
+│   │   │   ├── /change-password     # Changer le mot de passe
+│   │   │   ├── /forgot-password     # Mot de passe oublié
+│   │   │   └── /reset-password/<token>
+│   │   │
+│   │   ├── dashboard.py             # Routes dashboard
+│   │   │   ├── /dashboard/          # Dashboard principal
+│   │   │   ├── /dashboard/timbrage/avis-non-envoyes
+│   │   │   ├── /dashboard/timbrage/avis-envoyes
+│   │   │   ├── /dashboard/timbrage/avis-a-envoyer-priorite
+│   │   │   ├── /dashboard/timbrage/avis-nouvelle-version
+│   │   │   ├── /dashboard/api/stats/*
+│   │   │
+│   │   └── api_routes.py            # Routes API
+│   │       ├── GET /api/dossiers
+│   │       ├── POST /api/dossiers
+│   │       ├── GET /api/dossiers/<id>
+│   │       ├── PUT /api/dossiers/<id>/valider-transit
+│   │       ├── PUT /api/dossiers/<id>/valider-doc
+│   │       ├── PUT /api/avis/<id>/envoyer
+│   │       └── GET /api/profile
+│   │
+│   ├── 📁 static/
+│   │   └── css/
+│   │       └── style.css            # Styles personnalisés
+│   │
+│   └── 📁 templates/
+│       ├── base.html                # Template de base
+│       ├── 📁 auth/
+│       │   ├── login.html           # Page de connexion
+│       │   ├── change_password.html
+│       │   ├── forgot_password.html
+│       │   └── reset_password.html
+│       ├── 📁 dashboard/
+│       │   ├── timbrage_dashboard.html      # Dashboard Timbrage
+│       │   ├── transit_dashboard.html       # Dashboard Transit
+│       │   ├── documentation_dashboard.html # Dashboard Doc
+│       │   ├── commercial_dashboard.html    # Dashboard Commercial
+│       │   ├── admin_dashboard.html         # Dashboard Admin
+│       │   └── 📁 timbrage/
+│       │       ├── avis_non_envoyes.html
+│       │       ├── avis_envoyes.html
+│       │       ├── avis_a_envoyer_priorite.html
+│       │       └── avis_nouvelle_version.html
+│       └── 📁 errors/
+│           ├── 404.html
+│           └── 500.html
+│
+├── 📄 Documentation
+│   ├── README.md                    # Documentation principale
+│   ├── QUICKSTART.md                # Guide de démarrage rapide
+│   ├── SQL_SERVER_SETUP.md          # Configuration SQL Server
+│   ├── API_DOCUMENTATION.md         # Documentation API
+│   └── PROJECT_STRUCTURE.txt        # Ce fichier
+│
+├── 🔑 Rôles utilisateur (5)
+│   ├── 🔹 Timbrage
+│   │   └── Gère les avis d'arrivée
+│   ├── 🔹 Transit
+│   │   └── Valide les dossiers transit
+│   ├── 🔹 Documentation
+│   │   └── Valide la documentation
+│   ├── 🔹 Commercial
+│   │   └── Gère les opérations commerciales
+│   └── 🔹 Admin
+│       └── Administration système
+│
+├── 🗄️ Base de données (SQL Server)
+│   ├── users (Utilisateurs)
+│   ├── roles (Rôles)
+│   ├── dossiers (Dossiers de transport)
+│   ├── avis_arrivees (Avis d'arrivée)
+│   └── password_reset_tokens (Tokens de réinitialisation)
+│
+└── 🚀 Fonctionnalités principales
+    ├── Authentification
+    │   ├── Login/Logout
+    │   ├── Flask-Login (sessions)
+    │   ├── JWT tokens (API)
+    │   └── Gestion des mots de passe
+    ├── Gestion des dossiers
+    │   ├── Création/Lecture/Mise à jour
+    │   ├── Validation (Transit/Doc)
+    │   └── Historique des versions
+    ├── Avis d'arrivée
+    │   ├── Gestion prioritaire
+    │   ├── Tri par inflammabilité
+    │   ├── Tri par date d'arrivée
+    │   └── Versioning
+    └── Dashboards avec charts
+        ├── Statistiques en temps réel
+        ├── Pie charts (FCL vs LCL)
+        ├── Tendances (7 jours)
+        └── Filtres par rôle
+
+
+═══════════════════════════════════════════════════════════════
+
+📋 TECHNOLOGIES UTILISÉES
+
+Backend:
+├── Flask 2.3.3
+├── Flask-Login 0.6.2 (sessions)
+├── Flask-SQLAlchemy 3.0.5 (ORM)
+├── PyJWT 2.8.1 (JWT)
+└── python-dotenv 1.0.0 (env vars)
+
+Données:
+├── SQL Server (via pyodbc)
+└── SQLAlchemy MSSQL dialect
+
+Frontend:
+├── Bootstrap 5 (CSS)
+├── Font Awesome 6 (Icônes)
+└── Plotly 5 (Charts interactifs)
+
+Sécurité:
+├── Werkzeug (password hashing)
+├── Flask-Login (session management)
+└── JWT tokens (API auth)
+
+
+═══════════════════════════════════════════════════════════════
+
+⚡ DÉMARRAGE RAPIDE
+
+Windows:
+$ start.bat
+
+Linux/Mac:
+$ ./start.sh
+
+Puis accédez à:
+→ http://localhost:5000
+
+Identifiants par défaut:
+→ admin / YourPassword123! (configurable)
+
+
+═══════════════════════════════════════════════════════════════
+
+✅ CHECKLIST D'INSTALLATION
+
+□ Clone/télécharge le projet
+□ Active l'environnement virtuel (venv)
+□ Installe les dépendances (pip install -r requirements.txt)
+□ Configure .env avec la BD SQL Server
+□ Initialise la BD (python init_db.py)
+□ Crée un utilisateur (python cli.py create-user)
+□ Lance l'app (python run.py)
+□ Accède à http://localhost:5000
+□ Se connecte avec ses identifiants
+□ Explore le dashboard
+
+
+═══════════════════════════════════════════════════════════════
